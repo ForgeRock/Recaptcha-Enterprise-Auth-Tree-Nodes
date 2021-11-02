@@ -14,6 +14,8 @@ import org.forgerock.openam.auth.node.api.Node;
 import org.forgerock.openam.auth.node.api.OutcomeProvider;
 import org.forgerock.openam.auth.node.api.TreeContext;
 import org.forgerock.util.i18n.PreferredLocales;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.assistedinject.Assisted;
@@ -29,6 +31,8 @@ public class RecaptchaEnterpriseScoreNode implements Node {
 
     private static final String BUNDLE = RecaptchaEnterpriseScoreNode.class.getName();
     private final Config config;
+    private final Logger logger = LoggerFactory.getLogger(RecaptchaEnterpriseScoreNode.class);
+
 
     /**
      * Configuration for the node.
@@ -56,6 +60,10 @@ public class RecaptchaEnterpriseScoreNode implements Node {
 
     @Override
     public Action process(TreeContext context) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Evaluating if score {} is greater than or equal to {}", context.sharedState.get(RECAPTCHA_SCORE), config.scoreThreshold());
+        }
 
         if (context.sharedState.get(RECAPTCHA_SCORE).asDouble() >= Double.parseDouble(config.scoreThreshold())) {
             return Action.goTo(RecaptchaEnterpriseScoreNodeOutcome.GREATER_THAN_OR_EQUAL.name()).build();

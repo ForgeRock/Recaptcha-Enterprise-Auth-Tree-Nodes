@@ -107,6 +107,11 @@ public class RecaptchaEnterpriseAssessmentNode extends AbstractDecisionNode {
             return goTo(false).replaceSharedState(sharedState).build();
         }
         RiskAnalysis analysis = response.getRiskAnalysis();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Risk analysis finished with score: {}", analysis.getScore());
+        }
+        
         List<RiskAnalysis.ClassificationReason> reasons = new ArrayList<>(analysis.getReasonsList());
         List<String> stringReasons = new ArrayList<>();
         reasons.forEach(reason -> stringReasons.add(reason.name()));
