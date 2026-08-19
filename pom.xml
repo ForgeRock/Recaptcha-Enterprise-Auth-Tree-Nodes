@@ -29,7 +29,7 @@
 
     <properties>
         <am.version>7.5.2</am.version>
-        <grpc.version>1.75.0</grpc.version>
+        <grpc.version>1.83.1</grpc.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,15 +52,17 @@
                 <scope>import</scope>
             </dependency>
             <!--
-                Explicit grpc-java pin at 1.75.0 to close CVE-2025-55163 /
-                GHSA-prj3-ccx8-p6x4. libraries-bom:26.86.0 transitively pins
-                grpc-* at 1.68.0 via its chained first-party-dependencies BOM,
-                which is below the 1.75.0 fixed-in version. Direct
-                dependencyManagement entries beat imported ones, so this is
-                the reliable override. All 15 grpc-* artifacts observed in
-                the dependency tree must stay in lockstep at the same
-                version (grpc-java forbids cross-version mixing). See plan
-                AD-7 / Amendment 1.
+                Explicit grpc-java pin at 1.83.1 to close a set of Netty CVEs
+                bundled inside grpc-netty-shaded (netty-handler /
+                netty-codec-http / netty-codec-http2 / netty-codec) up to
+                fixed-in 4.1.136.Final / 4.2.15.Final. grpc-java 1.83.1
+                bundles Netty 4.2.15.Final; earlier grpc versions bundle
+                Netty below the fix line. libraries-bom:26.86.0 pins grpc-*
+                below this via its chained first-party-dependencies BOM, so
+                direct dependencyManagement entries are the reliable
+                override. All 15 grpc-* artifacts must stay in lockstep at
+                the same version (grpc-java forbids cross-version mixing).
+                Also closes CVE-2025-55163 / GHSA-prj3-ccx8-p6x4.
             -->
             <dependency>
                 <groupId>io.grpc</groupId>
