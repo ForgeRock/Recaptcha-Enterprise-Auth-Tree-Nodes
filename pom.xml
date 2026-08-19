@@ -23,14 +23,15 @@
     <artifactId>RecaptchaEnterprise</artifactId>
 
     <groupId>org.google</groupId>
-    <version>1.0.0</version>
+    <version>1.2.0</version>
     <name>Recaptcha Enterprise Auth Tree Node</name>
     <description>An Authentication Tree Node for integration into Recaptcha Enterprise</description>
 
     <properties>
-        <am.version>7.1.0</am.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <am.version>7.5.2</am.version>
+        <grpc.version>1.83.1</grpc.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -38,7 +39,7 @@
         <dependencies>
             <dependency>
                 <groupId>org.forgerock.am</groupId>
-                <artifactId>openam-auth-trees</artifactId>
+                <artifactId>openam-bom</artifactId>
                 <type>pom</type>
                 <scope>import</scope>
                 <version>${am.version}</version>
@@ -46,9 +47,97 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
-                <version>5.5.0</version>
+                <version>26.86.0</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!--
+                Explicit grpc-java pin at 1.83.1 to close a set of Netty CVEs
+                bundled inside grpc-netty-shaded (netty-handler /
+                netty-codec-http / netty-codec-http2 / netty-codec) up to
+                fixed-in 4.1.136.Final / 4.2.15.Final. grpc-java 1.83.1
+                bundles Netty 4.2.15.Final; earlier grpc versions bundle
+                Netty below the fix line. libraries-bom:26.86.0 pins grpc-*
+                below this via its chained first-party-dependencies BOM, so
+                direct dependencyManagement entries are the reliable
+                override. All 15 grpc-* artifacts must stay in lockstep at
+                the same version (grpc-java forbids cross-version mixing).
+                Also closes CVE-2025-55163 / GHSA-prj3-ccx8-p6x4.
+            -->
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-alts</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-api</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-auth</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-context</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-core</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-googleapis</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-grpclb</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-inprocess</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-netty-shaded</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-protobuf</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-protobuf-lite</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-services</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-stub</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-util</artifactId>
+                <version>${grpc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-xds</artifactId>
+                <version>${grpc.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -62,6 +151,7 @@
         <dependency>
             <groupId>org.forgerock.am</groupId>
             <artifactId>openam-guice-core</artifactId>
+            <version>${am.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -78,22 +168,18 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-recaptchaenterprise</artifactId>
-            <version>0.31.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.auth</groupId>
             <artifactId>google-auth-library-oauth2-http</artifactId>
-            <version>0.21.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.api</groupId>
             <artifactId>gax</artifactId>
-            <version>1.57.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.api</groupId>
             <artifactId>gax-grpc</artifactId>
-            <version>1.57.1</version>
         </dependency>
     </dependencies>
 
@@ -108,7 +194,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.5.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
