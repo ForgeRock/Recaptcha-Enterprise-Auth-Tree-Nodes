@@ -23,7 +23,7 @@
     <artifactId>RecaptchaEnterprise</artifactId>
 
     <groupId>org.google</groupId>
-    <version>1.0.0</version>
+    <version>1.2.0</version>
     <name>Recaptcha Enterprise Auth Tree Node</name>
     <description>An Authentication Tree Node for integration into Recaptcha Enterprise</description>
 

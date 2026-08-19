@@ -61,7 +61,7 @@ import org.forgerock.openam.plugins.StartupType;
  */
 public class RecaptchaEnterprisePlugin extends AbstractNodeAmPlugin {
 
-    static private String currentVersion = "1.1.0";
+    static private String currentVersion = "1.2.0";
 
     /**
      * Specify the Map of list of node classes that the plugin is providing. These will then be installed and
